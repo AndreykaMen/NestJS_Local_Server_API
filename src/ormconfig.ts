@@ -7,7 +7,8 @@ const config: ConnectionOptions = {
     username: 'mediumclone',
     password: '421517475',
     database: 'mediumclone',
-    entities: [__dirname + '/**/*.entity{.ts,.js}']
+    entities: [__dirname + '/**/*.entity{.ts,.js}'],
+    synchronize: true,
 }
 
 export default config;
