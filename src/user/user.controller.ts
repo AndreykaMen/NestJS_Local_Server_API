@@ -41,7 +41,6 @@ export class UserController {
     @Req()
     request: ExpressRequest,
   ): Promise<UserResponseInterface> {
-    console.log(request.user);
-    return 'CurrentUser' as any;
+    return this.userService.buildUserResponse(request.user);
   }
 }
