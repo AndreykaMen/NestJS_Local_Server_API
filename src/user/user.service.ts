@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { sign } from 'jsonwebtoken';
 import { JWT_SECRET } from '@app/config';
 import { UserResponseInterface } from '@app/user/types/userResponse.interface';
+import { LoginUserDto } from '@app/user/dto/loginUser.dto';
 
 @Injectable()
 export class UserService {
@@ -30,6 +31,19 @@ export class UserService {
     const newUser = new UserEntity();
     Object.assign(newUser, createUserDto);
     return await this.userRepository.save(newUser);
+  }
+
+  async login(loginUserDto: LoginUserDto): Promise<UserEntity> {
+    const user = await this.userRepository.findOne({
+      email: loginUserDto.email,
+    });
+    if (!user) {
+      throw new HttpException(
+        'Credentials are not valid',
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+    return user;
   }
 
   generateJwt(user: UserEntity): string {
