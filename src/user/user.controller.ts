@@ -37,7 +37,6 @@ export class UserController {
 
   @Get('user')
   async currentUser(@Req() request: Request): Promise<UserResponseInterface> {
-    console.log('request', request);
     return 'CurrentUser' as any;
   }
 }
