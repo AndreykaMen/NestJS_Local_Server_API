@@ -14,7 +14,7 @@ export class ArticleController {
   async create(
     @User() currentUser: UserEntity,
     @Body('article') createArticleDto: CreateArticleDto,
-  ) {
-    return this.articleService.createArticle();
+  ): Promise<any> {
+    return this.articleService.createArticle(currentUser, createArticleDto);
   }
 }
