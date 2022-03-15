@@ -19,6 +19,7 @@ import { CreateArticleDto } from '@app/article/dto/createArticle.dto';
 import { ArticleResponseInterface } from '@app/article/types/articleResponse.interface';
 import { ArticlesResponseInterface } from '@app/types/articlesResponse.Interface';
 
+// @ts-ignore
 @Controller('articles')
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
@@ -73,6 +74,19 @@ export class ArticleController {
     const article = await this.articleService.updateArticle(
       slug,
       updateArticleDto,
+      currentUserId,
+    );
+    return this.articleService.buildArticleResponse(article);
+  }
+
+  @Post(':slug/favorite')
+  @UseGuards(AuthGuard)
+  async addArticlesToFavorites(
+    @User('id') currentUserId: number,
+    @Param('slug') slug: string,
+  ): Promise<ArticleResponseInterface> {
+    const article = await this.articleService.addArticlesToFavorites(
+      slug,
       currentUserId,
     );
     return this.articleService.buildArticleResponse(article);
