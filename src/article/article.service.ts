@@ -44,6 +44,24 @@ export class ArticleService {
       });
     }
 
+    if (query.favorited) {
+      const author = await this.userRepository.findOne(
+        {
+          username: query.favorited,
+        },
+        {
+          relations: ['favorites'],
+        },
+      );
+      const ids = author.favorites.map((el) => el.id);
+      if (ids.length > 0) {
+        queryBuilder.andWhere('articles.id IN (:...ids)', { ids });
+      } else {
+        // хак для обрыва логики queryBuilder '1=0' задать andWhere() которого не может существовать
+        queryBuilder.andWhere('1=0');
+      }
+    }
+
     if (query.limit) {
       queryBuilder.limit(query.limit);
     }
