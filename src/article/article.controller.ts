@@ -19,7 +19,6 @@ import { CreateArticleDto } from '@app/article/dto/createArticle.dto';
 import { ArticleResponseInterface } from '@app/article/types/articleResponse.interface';
 import { ArticlesResponseInterface } from '@app/types/articlesResponse.Interface';
 
-// @ts-ignore
 @Controller('articles')
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
@@ -30,6 +29,15 @@ export class ArticleController {
     @Query() query: any,
   ): Promise<ArticlesResponseInterface> {
     return await this.articleService.findAll(currentUserId, query);
+  }
+
+  @Get('feed')
+  @UseGuards(AuthGuard)
+  async getFeed(
+    @User('id') currentUserId: number,
+    @Query() query: any,
+  ): Promise<ArticlesResponseInterface> {
+    return await this.articleService.getFeed(currentUserId, query);
   }
 
   @Post()
