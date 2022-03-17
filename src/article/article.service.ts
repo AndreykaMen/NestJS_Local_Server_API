@@ -100,6 +100,23 @@ export class ArticleService {
     if (follows.length === 0) {
       return { articles: [], articlesCount: 0 };
     }
+
+    const followingUsersIds = follows.map((follow) => follow.followingId);
+    const queryBuilder = getRepository(ArticleEntity)
+      .createQueryBuilder('articles')
+      .leftJoinAndSelect('articles.author', 'author')
+      .where('articles.authorId IN (:...ids)', { ids: followingUsersIds });
+    queryBuilder.orderBy('articles.createAt', 'DESC');
+    const articlesCount = await queryBuilder.getCount();
+    if (query.limit) {
+      queryBuilder.limit(query.limit);
+    }
+    if (query.offset) {
+      queryBuilder.offset(query.offset);
+    }
+
+    const articles = await queryBuilder.getMany();
+    return { articles, articlesCount };
   }
 
   async createArticle(
